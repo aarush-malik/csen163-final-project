@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Library AI</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">📚</div>
+        <div>
+          <div class="title">Library AI</div>
+          <div class="subtitle">Your Personalized Library Companion</div>
+        </div>
+      </div>
+
+      <button class="chip" id="impactChip" type="button" title="My Library Impact">
+        🌱 Impact
+      </button>
+    </header>
+
+    <!-- SCREEN 1: HOME -->
+    <main class="screen active" id="screen-home" aria-label="Home screen">
+      <section class="card">
+        <label class="label">Search</label>
+        <div class="row">
+          <input id="homeSearch" class="input" placeholder="Search bar..." />
+          <button class="btn primary" id="homeSearchBtn" type="button">Search</button>
+        </div>
+        <div class="hint">Try: “mystery action”, “career”, “STEM”, “kids”.</div>
+      </section>
+
+      <section class="card">
+        <div class="row space">
+          <div>
+            <div class="h2">Talk to AI Librarian</div>
+            <div class="muted">Describe what you need…</div>
+          </div>
+          <button class="btn" id="goChat" type="button">Open Chat →</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="h2">Browse Categories</div>
+        <div class="pillRow">
+          <button class="pill" data-category="Fiction" type="button">Fiction</button>
+          <button class="pill" data-category="STEM" type="button">STEM</button>
+          <button class="pill" data-category="Kids" type="button">Kids</button>
+        </div>
+      </section>
+
+      <section class="card subtle">
+        <div class="row space">
+          <div>
+            <div class="h2">My Library Impact</div>
+            <div class="muted">Borrowing reduces waste!</div>
+          </div>
+          <button class="btn" id="goImpact" type="button">View →</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- SCREEN 2: AI CHAT -->
+    <main class="screen" id="screen-chat" aria-label="AI chat screen">
+      <section class="screenHeader">
+        <button class="iconBtn" id="backFromChat" type="button" aria-label="Back">← Back</button>
+        <div>
+          <div class="h2">AI Librarian</div>
+          <div class="muted">Ask for recommendations, availability, or location.</div>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn small" id="chatToImpact" type="button">🌱 Impact</button>
+      </section>
+
+      <section class="card chatCard">
+        <div class="chatLog" id="chatLog" aria-live="polite"></div>
+
+        <div class="chatComposer">
+          <input id="chatInput" class="input" placeholder="Type message…" />
+          <button class="btn primary" id="sendChat" type="button">Send</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- SCREEN 3: BOOK DETAILS -->
+    <main class="screen" id="screen-details" aria-label="Book details screen">
+      <section class="screenHeader">
+        <button class="iconBtn" id="backFromDetails" type="button" aria-label="Back">← Back</button>
+        <div>
+          <div class="h2">Book Details</div>
+          <div class="muted">Reserve or save, then view location.</div>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn small" id="detailsToImpact" type="button">🌱 Impact</button>
+      </section>
+
+      <section class="card detailsGrid">
+        <div class="coverBox" id="coverBox">BOOK COVER</div>
+
+        <div>
+          <div class="detailsTitle" id="detailsTitle">Title</div>
+          <div class="muted" id="detailsAuthor">Author</div>
+
+          <div class="metaRow">
+            <span class="badge" id="detailsStatus">Status: Available</span>
+            <span class="badge" id="detailsFormat">Digital Copy ✅</span>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="label">Summary</div>
+          <p class="para" id="detailsSummary"></p>
+
+          <div class="label">Rating</div>
+          <div class="rating" id="detailsRating"></div>
+
+          <div class="row">
+            <button class="btn primary" id="reserveBtn" type="button">Reserve</button>
+            <button class="btn" id="saveBtn" type="button">Save</button>
+            <button class="btn" id="viewLocationBtn" type="button">View Location →</button>
+          </div>
+
+          <div class="toast" id="detailsToast" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- SCREEN 4: LOCATION -->
+    <main class="screen" id="screen-location" aria-label="Location screen">
+      <section class="screenHeader">
+        <button class="iconBtn" id="backFromLocation" type="button" aria-label="Back">← Back</button>
+        <div>
+          <div class="h2">Book Location</div>
+          <div class="muted" id="locationStatus">Status: Available</div>
+        </div>
+        <div class="spacer"></div>
+        <button class="btn small" id="locationToImpact" type="button">🌱 Impact</button>
+      </section>
+
+      <section class="card">
+        <div class="locationPath" id="locationPath">
+          Floor 1 → Aisle 3 → Shelf C
+        </div>
+
+        <div class="mapBox" aria-label="Simple map">
+          <div class="mapTitle">Simple Map</div>
+          <div class="mapRow">
+            <div class="mapNode">Entrance</div>
+            <div class="mapArrow">→</div>
+            <div class="mapNode highlight">Aisle 3</div>
+          </div>
+          <div class="mapRow">
+            <div class="mapNode">Study Area</div>
+            <div class="mapArrow">↘</div>
+            <div class="mapNode">Shelf C</div>
+          </div>
+
+          <div class="hint">This is a placeholder map box exactly like the Lo-Fi (“Simple Map Box”).</div>
+        </div>
+      </section>
+    </main>
+
+    <!-- SCREEN 5: IMPACT -->
+    <main class="screen" id="screen-impact" aria-label="Sustainability screen">
+      <section class="screenHeader">
+        <button class="iconBtn" id="backFromImpact" type="button" aria-label="Back">← Back</button>
+        <div>
+          <div class="h2">My Library Impact</div>
+          <div class="muted">Borrowing reduces waste!</div>
+        </div>
+        <div class="spacer"></div>
+      </section>
+
+      <section class="card impactGrid">
+        <div class="impactStat">
+          <div class="impactNum" id="booksBorrowed">8</div>
+          <div class="impactLabel">Books Borrowed</div>
+        </div>
+
+        <div class="impactStat">
+          <div class="impactNum" id="treesSaved">3</div>
+          <div class="impactLabel">Trees Saved</div>
+        </div>
+
+        <div class="impactStat">
+          <div class="impactNum" id="waterSaved">200</div>
+          <div class="impactLabel">Water Saved (gal)</div>
+        </div>
+
+        <div class="impactStat">
+          <div class="impactNum" id="co2Reduced">10</div>
+          <div class="impactLabel">CO₂ Reduced (lbs)</div>
+        </div>
+
+        <div class="impactCallout">
+          <div class="h3">Why this matters</div>
+          <p class="para">
+            Each borrow helps reduce demand for new printing and shipping. This prototype shows impact feedback so users feel
+            the sustainability benefit immediately.
+          </p>
+
+          <div class="row">
+            <button class="btn" id="impactReset" type="button">Reset (demo)</button>
+            <button class="btn primary" id="impactSimBorrow" type="button">Simulate Borrow +1</button>
+          </div>
+
+          <div class="hint">
+            These exact impact fields appear in the Lo-Fi: Books Borrowed, Trees Saved, Water Saved, CO₂ Reduced. :contentReference[oaicite:1]{index=1}
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bottombar">
+      <div class="muted smallText">CSEN 163 • Process Prototype • Library AI</div>
+      <div class="muted smallText" id="screenLabel">Home</div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
