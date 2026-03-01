@@ -27,57 +27,7 @@ function goBack(){
   showScreen(prev, false);
 }
 
-// ---------- Prototype data (simulated backend) ----------
-const books = [
-  {
-    id: "m1",
-    title: "Shadow Protocol",
-    author: "R. K. Lin",
-    summary: "A fast-paced mystery with covert ops, shifting alliances, and a case that refuses to stay buried.",
-    rating: 4.4,
-    category: "Fiction",
-    tags: ["mystery", "action", "thriller"],
-    location: { floor: 1, aisle: 3, shelf: "C" },
-    available: true,
-    digital: true,
-  },
-  {
-    id: "m2",
-    title: "The Midnight Cipher",
-    author: "Elena Voss",
-    summary: "A codebreaker uncovers a pattern of crimes linked to a decades-old disappearance.",
-    rating: 4.2,
-    category: "Fiction",
-    tags: ["mystery", "suspense"],
-    location: { floor: 1, aisle: 4, shelf: "A" },
-    available: true,
-    digital: false,
-  },
-  {
-    id: "s1",
-    title: "Deep Work (Library Edition)",
-    author: "Cal Newport",
-    summary: "A practical guide to focused work in a distracted world—perfect for career growth and study habits.",
-    rating: 4.6,
-    category: "STEM",
-    tags: ["career", "productivity", "study"],
-    location: { floor: 2, aisle: 1, shelf: "B" },
-    available: true,
-    digital: true,
-  },
-  {
-    id: "k1",
-    title: "Rocket Science for Kids",
-    author: "Maya Patel",
-    summary: "Hands-on experiments and stories that make STEM fun and approachable.",
-    rating: 4.3,
-    category: "Kids",
-    tags: ["kids", "stem", "science"],
-    location: { floor: 1, aisle: 7, shelf: "D" },
-    available: false,
-    digital: true,
-  }
-];
+// ---------- Book data loaded from catalogue.js ----------
 
 // ---------- Sustainability / impact state (matches Lo-Fi fields) ----------
 const impact = {
@@ -190,17 +140,18 @@ function findMatches(query){
   const q = query.toLowerCase();
 
   // category intent
-  const categoryMatch = ["fiction","stem","kids"].find(c => q.includes(c));
+  const categories = ["fiction","stem","kids","history","fantasy","self-help","philosophy"];
+  const categoryMatch = categories.find(c => q.includes(c));
   if(categoryMatch){
-    const cat = categoryMatch.toUpperCase() === "STEM" ? "STEM" : categoryMatch[0].toUpperCase() + categoryMatch.slice(1);
-    return books.filter(b => b.category.toLowerCase() === cat.toLowerCase());
+    return books.filter(b => b.category.toLowerCase() === categoryMatch.toLowerCase());
   }
 
-  // tag intent
+  // tag + title + author intent
   const tokens = q.split(/[^a-z0-9]+/).filter(Boolean);
   return books
     .map(b => {
-      const score = tokens.reduce((acc,t) => acc + (b.tags.includes(t) ? 1 : 0), 0);
+      const haystack = [...b.tags, ...b.title.toLowerCase().split(/\s+/), ...b.author.toLowerCase().split(/\s+/)];
+      const score = tokens.reduce((acc,t) => acc + (haystack.some(h => h.includes(t)) ? 1 : 0), 0);
       return { b, score };
     })
     .filter(x => x.score > 0)
