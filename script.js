@@ -23,11 +23,13 @@ function setSystemStatus(isLoading, label) {
 
 // ── Navigation ──
 function goTo(page, linkEl) {
+  setSystemStatus(true, "Loading page...");
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById("page-" + page).classList.add("active");
   document.querySelectorAll(".nav-links a").forEach(a => a.classList.remove("active"));
   if (linkEl) linkEl.classList.add("active");
   window.scrollTo({ top: 0, behavior: "smooth" });
+  setTimeout(function () { setSystemStatus(false, "Ready"); }, 220);
 }
 
 // ── Toast ──
@@ -42,7 +44,33 @@ function toast(msg) {
 // ── Search ──
 function fillSearch(text) {
   document.getElementById("searchInput").value = text;
+  validateSearchInput();
   runSearch();
+}
+
+function setSearchError(msg) {
+  const el = document.getElementById("searchError");
+  if (el) el.textContent = msg || "";
+}
+
+function validateSearchInput() {
+  const input = document.getElementById("searchInput");
+  const btn = document.getElementById("searchBtn");
+  if (!input || !btn) return true;
+  const val = input.value.trim();
+  btn.disabled = val.length === 0;
+  if (!val) {
+    setSearchError("Start with a title, author, genre, or mood.");
+    return false;
+  }
+  setSearchError("");
+  return true;
+}
+
+function suggestQueries(query) {
+  const q = query.toLowerCase();
+  const pool = ["mystery", "fantasy", "history", "kids adventure", "self-help", "philosophy", "tolkien", "agatha christie", "science"]; 
+  return pool.filter(x => x.includes(q.slice(0, 3)) || q.includes(x.slice(0, 3))).slice(0, 3);
 }
 
 function findMatches(query) {
@@ -77,12 +105,30 @@ function findMatches(query) {
 
 function runSearch() {
   const val = document.getElementById("searchInput").value.trim();
-  if (!val) return;
+  if (!validateSearchInput()) return;
+
+  if (val.length < 2) {
+    setSearchError("Search is too short. Try 2+ characters.");
+    return;
+  }
+
   setSystemStatus(true, "Searching catalog...");
   setTimeout(function () {
     lastSearchResults = findMatches(val);
     renderAIResponse(val, lastSearchResults);
     applyFilters(); // renders with current sidebar filters
+
+    if (lastSearchResults.length === 0) {
+      const suggestions = suggestQueries(val);
+      if (suggestions.length) {
+        setSearchError("No matches yet. Try: " + suggestions.join(", "));
+      } else {
+        setSearchError("No matches found. Try a genre like fantasy, history, or self-help.");
+      }
+    } else {
+      setSearchError("");
+    }
+
     setSystemStatus(false, "Ready");
     toast('AI search complete for: "' + val + '"');
   }, 650);
@@ -156,7 +202,7 @@ function renderResults(matches) {
           '<div class="rc-actions">' +
             '<button class="btn-reserve" onclick="event.stopPropagation();reserveBook(\'' + b.id + '\')"' +
               (!b.available ? ' style="background:#ccc;cursor:default;"' : "") + ">" +
-              (b.available ? "Reserve" : "Waitlist") + "</button>" +
+              (b.available ? "Place Hold" : "Join Waitlist") + "</button>" +
             '<button class="btn-detail" onclick="event.stopPropagation();openDetail(\'' + b.id + '\')">Details →</button>' +
           "</div>" +
         "</div>"
@@ -186,8 +232,8 @@ function renderAIResponse(query, matches) {
 
 function reserveBook(bookId) {
   const book = books.find(b => b.id === bookId);
-  if (book && book.available) toast('Reserved "' + book.title + '"!');
-  else if (book) toast('Added to waitlist for "' + book.title + '".');
+  if (book && book.available) toast('Hold placed for pickup: "' + book.title + '".');
+  else if (book) toast('Added to hold waitlist: "' + book.title + '".');
 }
 
 function reserveCurrentBook() {
@@ -226,7 +272,7 @@ function openDetail(bookId) {
   document.getElementById("detail-genre").textContent = b.category;
   document.getElementById("detail-desc").textContent = b.summary;
   document.getElementById("detail-rating").textContent = b.rating.toFixed(1) + "★ rating";
-  document.getElementById("detail-digital").textContent = b.digital ? "Digital Available" : "Print Only";
+  document.getElementById("detail-digital").textContent = b.digital ? "Digital: Instant Checkout" : "Print: In Library";
 
   const availEl = document.getElementById("detail-avail");
   availEl.textContent = b.available ? "Available" : "Checked Out";
@@ -255,7 +301,7 @@ function openDetail(bookId) {
   // Reserve button state
   const reserveBtn = document.getElementById("detail-reserve-btn");
   if (b.available) {
-    reserveBtn.textContent = "Reserve This Book";
+    reserveBtn.textContent = "Place Hold for Pickup";
     reserveBtn.style.background = "";
     reserveBtn.style.cursor = "";
   } else {
@@ -385,6 +431,8 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("searchInput").addEventListener("keydown", function (e) {
     if (e.key === "Enter") runSearch();
   });
+  document.getElementById("searchInput").addEventListener("input", validateSearchInput);
+  validateSearchInput();
 
   // Update book count stat
   document.getElementById("stat-books").textContent = books.length;
@@ -417,4 +465,17 @@ function closeWelcomeModal() {
   } catch (e) {
     // no-op if localStorage is unavailable
   }
+}
+
+
+function resetSearchSession() {
+  lastSearchResults = [];
+  document.getElementById("searchInput").value = "";
+  setSearchError("");
+  validateSearchInput();
+  const featured = books.filter(function (b) { return b.available; }).slice(0, 8);
+  renderResults(featured);
+  document.getElementById("resultsCount").textContent = "Showing " + featured.length + " featured books";
+  document.getElementById("aiResponseText").textContent = "New session started. Ask by title, author, genre, or mood and I'll explain the best matches.";
+  toast("Started a new search session.");
 }

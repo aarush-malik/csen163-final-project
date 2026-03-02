@@ -201,6 +201,12 @@ nav{
   font-size:0.95rem;cursor:pointer;transition:background 0.2s;white-space:nowrap;
 }
 .search-bar-btn:hover{background:#6B1D29;}
+.search-bar-btn:disabled{background:#b49aa0;cursor:not-allowed;}
+.search-helper{margin-top:0.8rem;font-size:0.8rem;color:rgba(255,255,255,0.68);}
+.search-error{margin-top:0.65rem;color:#ffd1d9;font-size:0.82rem;min-height:1.1rem;}
+.ai-response-actions{margin-left:auto;}
+.ai-reset-btn{border:1px solid rgba(134,38,51,0.25);background:white;color:#862633;border-radius:8px;padding:0.3rem 0.65rem;font-size:0.74rem;font-weight:600;cursor:pointer;}
+.ai-reset-btn:hover{background:#fdf3f5;}
 .search-pills{display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;margin-top:1.2rem;}
 .search-pill{
   background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);
@@ -437,6 +443,15 @@ footer span{color:#E8C6CB;}
   .home-stats{padding:2rem 1.5rem;}
   .detail-hero{grid-template-columns:1fr;}
   .detail-back{position:relative;top:auto;left:auto;margin-bottom:1rem;display:inline-flex;}
+  .nav-links{display:none;}
+  .nav-cta{display:none;}
+  .search-bar{flex-direction:column;border-radius:12px;}
+  .search-bar input{padding:0.9rem 1rem;}
+  .search-bar-btn{width:100%;padding:0.85rem 1rem;}
+  .results-header{align-items:flex-start;gap:0.7rem;flex-direction:column;}
+  .result-card{flex-direction:column;}
+  .rc-actions{width:100%;align-items:stretch;}
+  .btn-reserve,.btn-detail{width:100%;}
 }
 </style>
 </head>
@@ -603,6 +618,7 @@ footer span{color:#E8C6CB;}
 
   <section class="sus-metrics">
     <div class="section-eyebrow">Your Personal Impact</div>
+    <p class="section-sub">These values show your running total for this demo session based on books you add below.</p>
     <h2 class="section-h2">What 1 borrowed book saves.</h2>
     <p class="section-sub">Compared to purchasing a new copy of the same title — averaged across our catalog.</p>
     <div class="sus-metrics-grid">
@@ -658,8 +674,10 @@ footer span{color:#E8C6CB;}
     <div class="search-bar-wrap">
       <div class="search-bar">
         <input type="text" id="searchInput" placeholder="e.g. 'mystery thriller' or 'Tolkien' or 'self-help motivation'"/>
-        <button class="search-bar-btn" onclick="runSearch()">AI Search</button>
+        <button class="search-bar-btn" id="searchBtn" onclick="runSearch()" disabled>AI Search</button>
       </div>
+      <div class="search-helper">Search = exact title/author/topic. AI Librarian below explains why matches fit.</div>
+      <div class="search-error" id="searchError"></div>
       <div class="search-pills">
         <span class="search-pill" onclick="fillSearch('fiction')">Fiction</span>
         <span class="search-pill" onclick="fillSearch('stem science')">STEM</span>
@@ -690,7 +708,7 @@ footer span{color:#E8C6CB;}
         <div class="filter-group">
           <div class="filter-group-label">Availability</div>
           <div class="filter-option"><input type="checkbox" id="fa-avail" onchange="applyFilters()"/><label for="fa-avail">Available Now</label></div>
-          <div class="filter-option"><input type="checkbox" id="fa-digital" onchange="applyFilters()"/><label for="fa-digital">Digital Copy</label></div>
+          <div class="filter-option"><input type="checkbox" id="fa-digital" onchange="applyFilters()"/><label for="fa-digital">Digital Copy (instant checkout)</label></div>
         </div>
       </div>
 
@@ -700,6 +718,7 @@ footer span{color:#E8C6CB;}
           <div class="ai-response-header">
             <div class="ai-dot"></div>
             <span>AI Librarian</span>
+            <div class="ai-response-actions"><button class="ai-reset-btn" onclick="resetSearchSession()">New Search Session</button></div>
           </div>
           <div class="ai-response-text" id="aiResponseText">
             Try a search above — describe a mood, genre, or book you already loved. I'll find the best matches and explain why each one fits. You can also tap any suggested tag below the search bar.
