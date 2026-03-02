@@ -4,8 +4,8 @@ const CATEGORY_EMOJI = {
   History: "📜", Fantasy: "🐉", "Self-Help": "💡", Philosophy: "🏛️",
 };
 const CATEGORY_BG = {
-  Fiction: "#FFF3E0", STEM: "#E3F2FD", Kids: "#F3E5F5",
-  History: "#EFEBE9", Fantasy: "#E8F5E9", "Self-Help": "#FFF8E1", Philosophy: "#F3E8FF",
+  Fiction: "#F5E6E8", STEM: "#E8ECF0", Kids: "#F0EDF2",
+  History: "#EFEBE9", Fantasy: "#E8ECF0", "Self-Help": "#F5F0E8", Philosophy: "#F3E8FF",
 };
 // Aisle number → letter for the floor map SVG
 const AISLE_LETTERS = ["A", "B", "C", "D"];
@@ -292,7 +292,7 @@ function updateFloorMap(book) {
     const label = document.getElementById("label-aisle-" + letter);
     if (label) {
       label.textContent = letter === aisleL ? "AISLE " + letter + " ★" : "AISLE " + letter;
-      label.setAttribute("fill", letter === aisleL ? "#2D6A4F" : "#555");
+      label.setAttribute("fill", letter === aisleL ? "#862633" : "#555");
     }
   });
 }
@@ -330,6 +330,36 @@ function renderAlsoRead(book) {
       );
     })
     .join("");
+}
+
+// ── Sustainability Tracker ──
+let trackerCount = 0;
+const WATER_PER_BOOK = 19.8; // gallons of water saved per borrowed book
+const TREES_PER_BOOK = 0.116; // trees preserved per borrowed book
+const CO2_PER_BOOK = 0.76; // lbs of CO2 avoided per borrowed book
+
+function changeTrackerCount(delta) {
+  trackerCount = Math.max(0, trackerCount + delta);
+  updateTrackerDisplay();
+}
+
+function updateTrackerDisplay() {
+  document.getElementById("tracker-count").textContent = trackerCount;
+
+  const water = (trackerCount * WATER_PER_BOOK).toFixed(1);
+  const trees = (trackerCount * TREES_PER_BOOK).toFixed(2);
+  const co2 = (trackerCount * CO2_PER_BOOK).toFixed(1);
+
+  animateValue("tracker-water", water);
+  animateValue("tracker-trees", trees);
+  animateValue("tracker-co2", co2);
+}
+
+function animateValue(id, newVal) {
+  const el = document.getElementById(id);
+  el.style.transform = "scale(1.15)";
+  el.textContent = newVal;
+  setTimeout(function() { el.style.transform = "scale(1)"; }, 200);
 }
 
 // ── Init ──
