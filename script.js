@@ -396,11 +396,25 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("resultsCount").textContent = "Showing " + featured.length + " featured books";
 
   const welcomeModal = document.getElementById("welcome-modal");
-  if (welcomeModal) welcomeModal.classList.add("show");
+  try {
+    const hasSeenWelcome = localStorage.getItem("scailWelcomeSeen") === "true";
+    if (welcomeModal && !hasSeenWelcome) {
+      welcomeModal.classList.add("show");
+      localStorage.setItem("scailWelcomeSeen", "true");
+    }
+  } catch (e) {
+    if (welcomeModal) welcomeModal.classList.add("show");
+  }
+
   setSystemStatus(false, "Ready");
 });
 
 function closeWelcomeModal() {
   const welcomeModal = document.getElementById("welcome-modal");
   if (welcomeModal) welcomeModal.classList.remove("show");
+  try {
+    localStorage.setItem("scailWelcomeSeen", "true");
+  } catch (e) {
+    // no-op if localStorage is unavailable
+  }
 }
