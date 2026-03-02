@@ -201,7 +201,6 @@ nav{
   font-size:0.95rem;cursor:pointer;transition:background 0.2s;white-space:nowrap;
 }
 .search-bar-btn:hover{background:#6B1D29;}
-.search-bar-btn:disabled{background:#b49aa0;cursor:not-allowed;}
 .search-helper{margin-top:0.8rem;font-size:0.8rem;color:rgba(255,255,255,0.68);}
 .search-error{margin-top:0.65rem;color:#ffd1d9;font-size:0.82rem;min-height:1.1rem;}
 .ai-response-actions{margin-left:auto;}
@@ -674,7 +673,7 @@ footer span{color:#E8C6CB;}
     <div class="search-bar-wrap">
       <div class="search-bar">
         <input type="text" id="searchInput" placeholder="e.g. 'mystery thriller' or 'Tolkien' or 'self-help motivation'"/>
-        <button class="search-bar-btn" id="searchBtn" onclick="runSearch()" disabled>AI Search</button>
+        <button class="search-bar-btn" id="searchBtn" onclick="runSearch()">AI Search</button>
       </div>
       <div class="search-helper">Search = exact title/author/topic. AI Librarian below explains why matches fit.</div>
       <div class="search-error" id="searchError"></div>

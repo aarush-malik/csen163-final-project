@@ -44,7 +44,7 @@ function toast(msg) {
 // ── Search ──
 function fillSearch(text) {
   document.getElementById("searchInput").value = text;
-  validateSearchInput();
+  validateSearchInput(false);
   runSearch();
 }
 
@@ -53,14 +53,12 @@ function setSearchError(msg) {
   if (el) el.textContent = msg || "";
 }
 
-function validateSearchInput() {
+function validateSearchInput(showMessage) {
   const input = document.getElementById("searchInput");
-  const btn = document.getElementById("searchBtn");
-  if (!input || !btn) return true;
+  if (!input) return true;
   const val = input.value.trim();
-  btn.disabled = val.length === 0;
   if (!val) {
-    setSearchError("Start with a title, author, genre, or mood.");
+    if (showMessage) setSearchError("Start with a title, author, genre, or mood.");
     return false;
   }
   setSearchError("");
@@ -105,7 +103,7 @@ function findMatches(query) {
 
 function runSearch() {
   const val = document.getElementById("searchInput").value.trim();
-  if (!validateSearchInput()) return;
+  if (!validateSearchInput(true)) return;
 
   if (val.length < 2) {
     setSearchError("Search is too short. Try 2+ characters.");
@@ -431,8 +429,8 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("searchInput").addEventListener("keydown", function (e) {
     if (e.key === "Enter") runSearch();
   });
-  document.getElementById("searchInput").addEventListener("input", validateSearchInput);
-  validateSearchInput();
+  document.getElementById("searchInput").addEventListener("input", function () { validateSearchInput(false); });
+  validateSearchInput(false);
 
   // Update book count stat
   document.getElementById("stat-books").textContent = books.length;
@@ -472,7 +470,7 @@ function resetSearchSession() {
   lastSearchResults = [];
   document.getElementById("searchInput").value = "";
   setSearchError("");
-  validateSearchInput();
+  validateSearchInput(false);
   const featured = books.filter(function (b) { return b.available; }).slice(0, 8);
   renderResults(featured);
   document.getElementById("resultsCount").textContent = "Showing " + featured.length + " featured books";
