@@ -13,6 +13,14 @@ const AISLE_LETTERS = ["A", "B", "C", "D"];
 let currentBook = null;
 let lastSearchResults = [];
 
+function setSystemStatus(isLoading, label) {
+  const dot = document.getElementById("status-dot");
+  const text = document.getElementById("status-text");
+  if (!dot || !text) return;
+  dot.classList.toggle("loading", Boolean(isLoading));
+  text.textContent = label || (isLoading ? "Working..." : "Ready");
+}
+
 // ── Navigation ──
 function goTo(page, linkEl) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
@@ -70,10 +78,14 @@ function findMatches(query) {
 function runSearch() {
   const val = document.getElementById("searchInput").value.trim();
   if (!val) return;
-  lastSearchResults = findMatches(val);
-  renderAIResponse(val, lastSearchResults);
-  applyFilters(); // renders with current sidebar filters
-  toast('AI search complete for: "' + val + '"');
+  setSystemStatus(true, "Searching catalog...");
+  setTimeout(function () {
+    lastSearchResults = findMatches(val);
+    renderAIResponse(val, lastSearchResults);
+    applyFilters(); // renders with current sidebar filters
+    setSystemStatus(false, "Ready");
+    toast('AI search complete for: "' + val + '"');
+  }, 650);
 }
 
 function applyFilters() {
@@ -184,8 +196,12 @@ function reserveCurrentBook() {
 
 // ── Book Details ──
 function openDetail(bookId) {
+  setSystemStatus(true, "Loading book details...");
   currentBook = books.find(b => b.id === bookId);
-  if (!currentBook) return;
+  if (!currentBook) {
+    setSystemStatus(false, "Ready");
+    return;
+  }
   const b = currentBook;
   const emoji = CATEGORY_EMOJI[b.category] || "📖";
   const bg = CATEGORY_BG[b.category] || "#F5F5F5";
@@ -255,6 +271,7 @@ function openDetail(bookId) {
   renderAlsoRead(b);
 
   goTo("detail", null);
+  setSystemStatus(false, "Ready");
 }
 
 // ── Floor Map ──
@@ -377,4 +394,13 @@ document.addEventListener("DOMContentLoaded", function () {
   var featured = books.filter(function (b) { return b.available; }).slice(0, 8);
   renderResults(featured);
   document.getElementById("resultsCount").textContent = "Showing " + featured.length + " featured books";
+
+  const welcomeModal = document.getElementById("welcome-modal");
+  if (welcomeModal) welcomeModal.classList.add("show");
+  setSystemStatus(false, "Ready");
 });
+
+function closeWelcomeModal() {
+  const welcomeModal = document.getElementById("welcome-modal");
+  if (welcomeModal) welcomeModal.classList.remove("show");
+}
