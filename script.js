@@ -206,6 +206,14 @@ function openBookDetails(bookId){
   selectedBook = books.find(b => b.id === bookId);
   if(!selectedBook) return;
 
+  // Cover image
+  const coverBox = document.getElementById("coverBox");
+  if (selectedBook.coverId) {
+    coverBox.innerHTML = `<img src="${COVER_BASE}${selectedBook.coverId}-M.jpg" alt="Cover of ${selectedBook.title}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" onerror="this.parentNode.textContent='BOOK COVER'">`;
+  } else {
+    coverBox.textContent = selectedBook.title;
+  }
+
   document.getElementById("detailsTitle").textContent = selectedBook.title;
   document.getElementById("detailsAuthor").textContent = selectedBook.author;
   document.getElementById("detailsSummary").textContent = selectedBook.summary;
