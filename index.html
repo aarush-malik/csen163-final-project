@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>LibraryAI</title>
+<title>SCAIL</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -201,6 +201,12 @@ nav{
   font-size:0.95rem;cursor:pointer;transition:background 0.2s;white-space:nowrap;
 }
 .search-bar-btn:hover{background:#6B1D29;}
+.search-bar-btn:disabled{background:#b49aa0;cursor:not-allowed;}
+.search-helper{margin-top:0.8rem;font-size:0.8rem;color:rgba(255,255,255,0.68);}
+.search-error{margin-top:0.65rem;color:#ffd1d9;font-size:0.82rem;min-height:1.1rem;}
+.ai-response-actions{margin-left:auto;}
+.ai-reset-btn{border:1px solid rgba(134,38,51,0.25);background:white;color:#862633;border-radius:8px;padding:0.3rem 0.65rem;font-size:0.74rem;font-weight:600;cursor:pointer;}
+.ai-reset-btn:hover{background:#fdf3f5;}
 .search-pills{display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;margin-top:1.2rem;}
 .search-pill{
   background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);
@@ -416,14 +422,36 @@ footer span{color:#E8C6CB;}
 }
 .toast.show{opacity:1;transform:none;}
 
+.system-status{display:flex;align-items:center;gap:0.45rem;font-size:0.78rem;color:#6b7280;margin-left:auto;margin-right:0.8rem;}
+.status-dot{width:11px;height:11px;border-radius:50%;border:2px solid #862633;border-top-color:transparent;display:inline-block;}
+.status-dot.loading{animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.welcome-modal{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:1200;padding:1rem;}
+.welcome-modal.show{display:flex;}
+.welcome-card{background:#fff;max-width:460px;padding:2rem;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,0.22);text-align:center;}
+.welcome-card h2{font-family:'Playfair Display',serif;color:#862633;margin-bottom:0.6rem;}
+.welcome-card p{color:#555;line-height:1.6;margin-bottom:1.2rem;}
+.welcome-card button{border:none;background:#862633;color:white;padding:0.7rem 1.2rem;border-radius:10px;cursor:pointer;font-weight:600;}
+
 @media(max-width:900px){
   .home-hero,.sus-hero,.detail-hero,.search-layout,.detail-layout{grid-template-columns:1fr;}
   .home-stats,.feat-grid,.sus-metrics-grid,.sus-comp-grid,.tracker-savings{grid-template-columns:1fr 1fr;}
   nav{padding:0 1.5rem;}
+  .system-status{display:none;}
   .home-hero,.sus-hero,.search-body,.detail-hero,.detail-body,.home-features,.sus-metrics,.sus-comparison,.also-read{padding-left:1.5rem;padding-right:1.5rem;}
   .home-stats{padding:2rem 1.5rem;}
   .detail-hero{grid-template-columns:1fr;}
   .detail-back{position:relative;top:auto;left:auto;margin-bottom:1rem;display:inline-flex;}
+  .nav-links{display:none;}
+  .nav-cta{display:none;}
+  .search-bar{flex-direction:column;border-radius:12px;}
+  .search-bar input{padding:0.9rem 1rem;}
+  .search-bar-btn{width:100%;padding:0.85rem 1rem;}
+  .results-header{align-items:flex-start;gap:0.7rem;flex-direction:column;}
+  .result-card{flex-direction:column;}
+  .rc-actions{width:100%;align-items:stretch;}
+  .btn-reserve,.btn-detail{width:100%;}
 }
 </style>
 </head>
@@ -433,12 +461,17 @@ footer span{color:#E8C6CB;}
 <nav id="main-nav">
   <a class="nav-brand" href="#">
     <div class="nav-brand-icon">📚</div>
-    <span class="nav-brand-name">LibraryAI</span>
+    <span class="nav-brand-name">SCAIL</span>
   </a>
   <div class="nav-links">
     <a href="#" class="active" onclick="goTo('home',this)">Home</a>
     <a href="#" onclick="goTo('sustainability',this)">Sustainability</a>
     <a href="#" onclick="goTo('search',this)">AI Search</a>
+    <a href="help.html">Help</a>
+  </div>
+  <div class="system-status" aria-live="polite">
+    <span id="status-dot" class="status-dot"></span>
+    <span id="status-text">Ready</span>
   </div>
   <button class="nav-cta" onclick="toast('Coming soon!')">Sign In</button>
 </nav>
@@ -510,7 +543,7 @@ footer span{color:#E8C6CB;}
     </div>
   </section>
 
-  <footer>CSEN 163 Final Project &nbsp;·&nbsp; Team: Bemmy · Aarush · Keona · Blessy &nbsp;·&nbsp; <span>LibraryAI 2026</span></footer>
+  <footer>CSEN 163 Final Project &nbsp;·&nbsp; Team: Bemmy · Aarush · Keona · Blessy &nbsp;·&nbsp; <span>SCAIL 2026</span></footer>
 </div>
 
 <!-- ═══ PAGE 2: SUSTAINABILITY ═══ -->
@@ -585,6 +618,7 @@ footer span{color:#E8C6CB;}
 
   <section class="sus-metrics">
     <div class="section-eyebrow">Your Personal Impact</div>
+    <p class="section-sub">These values show your running total for this demo session based on books you add below.</p>
     <h2 class="section-h2">What 1 borrowed book saves.</h2>
     <p class="section-sub">Compared to purchasing a new copy of the same title — averaged across our catalog.</p>
     <div class="sus-metrics-grid">
@@ -608,7 +642,7 @@ footer span{color:#E8C6CB;}
 
   <section class="sus-comparison">
     <div class="section-eyebrow">The Case for Borrowing</div>
-    <h2 class="section-h2">Old way vs. LibraryAI way.</h2>
+    <h2 class="section-h2">Old way vs. SCAIL way.</h2>
     <div class="sus-comp-grid">
       <div class="sus-comp-card old">
         <h3>Buying a New Book</h3>
@@ -619,7 +653,7 @@ footer span{color:#E8C6CB;}
         <div class="sus-comp-item"><span class="ci-icon">💸</span> Average cost: $18–$28 per book</div>
       </div>
       <div class="sus-comp-card new">
-        <h3>Borrowing via LibraryAI</h3>
+        <h3>Borrowing via SCAIL</h3>
         <div class="sus-comp-item"><span class="ci-icon">♻️</span> One physical copy shared by hundreds of readers</div>
         <div class="sus-comp-item"><span class="ci-icon">🚶</span> Walking or transit to the library = near-zero emissions</div>
         <div class="sus-comp-item"><span class="ci-icon">📊</span> Real-time impact score shows your personal contribution</div>
@@ -629,7 +663,7 @@ footer span{color:#E8C6CB;}
     </div>
   </section>
 
-  <footer>CSEN 163 Final Project &nbsp;·&nbsp; Team: Bemmy · Aarush · Keona · Blessy &nbsp;·&nbsp; <span>LibraryAI 2026</span></footer>
+  <footer>CSEN 163 Final Project &nbsp;·&nbsp; Team: Bemmy · Aarush · Keona · Blessy &nbsp;·&nbsp; <span>SCAIL 2026</span></footer>
 </div>
 
 <!-- ═══ PAGE 3: AI SEARCH ═══ -->
@@ -640,8 +674,10 @@ footer span{color:#E8C6CB;}
     <div class="search-bar-wrap">
       <div class="search-bar">
         <input type="text" id="searchInput" placeholder="e.g. 'mystery thriller' or 'Tolkien' or 'self-help motivation'"/>
-        <button class="search-bar-btn" onclick="runSearch()">AI Search</button>
+        <button class="search-bar-btn" id="searchBtn" onclick="runSearch()" disabled>AI Search</button>
       </div>
+      <div class="search-helper">Search = exact title/author/topic. AI Librarian below explains why matches fit.</div>
+      <div class="search-error" id="searchError"></div>
       <div class="search-pills">
         <span class="search-pill" onclick="fillSearch('fiction')">Fiction</span>
         <span class="search-pill" onclick="fillSearch('stem science')">STEM</span>
@@ -672,7 +708,7 @@ footer span{color:#E8C6CB;}
         <div class="filter-group">
           <div class="filter-group-label">Availability</div>
           <div class="filter-option"><input type="checkbox" id="fa-avail" onchange="applyFilters()"/><label for="fa-avail">Available Now</label></div>
-          <div class="filter-option"><input type="checkbox" id="fa-digital" onchange="applyFilters()"/><label for="fa-digital">Digital Copy</label></div>
+          <div class="filter-option"><input type="checkbox" id="fa-digital" onchange="applyFilters()"/><label for="fa-digital">Digital Copy (instant checkout)</label></div>
         </div>
       </div>
 
@@ -682,6 +718,7 @@ footer span{color:#E8C6CB;}
           <div class="ai-response-header">
             <div class="ai-dot"></div>
             <span>AI Librarian</span>
+            <div class="ai-response-actions"><button class="ai-reset-btn" onclick="resetSearchSession()">New Search Session</button></div>
           </div>
           <div class="ai-response-text" id="aiResponseText">
             Try a search above — describe a mood, genre, or book you already loved. I'll find the best matches and explain why each one fits. You can also tap any suggested tag below the search bar.
@@ -700,7 +737,7 @@ footer span{color:#E8C6CB;}
     </div>
   </div>
 
-  <footer>CSEN 163 Final Project &nbsp;·&nbsp; Team: Bemmy · Aarush · Keona · Blessy &nbsp;·&nbsp; <span>LibraryAI 2026</span></footer>
+  <footer>CSEN 163 Final Project &nbsp;·&nbsp; Team: Bemmy · Aarush · Keona · Blessy &nbsp;·&nbsp; <span>SCAIL 2026</span></footer>
 </div>
 
 <!-- ═══ PAGE 4: BOOK DETAILS ═══ -->
@@ -846,7 +883,7 @@ footer span{color:#E8C6CB;}
         </div>
         <div class="cv-section">
           <h4>Computer Vision Assist</h4>
-          <p>Can't find it? Open the LibraryAI app and point your camera at the shelves. Our YOLO-based CV system will highlight your book in real time with an AR overlay.</p>
+          <p>Can't find it? Open the SCAIL app and point your camera at the shelves. Our YOLO-based CV system will highlight your book in real time with an AR overlay.</p>
         </div>
       </div>
     </div>
@@ -859,7 +896,17 @@ footer span{color:#E8C6CB;}
     <div class="also-grid" id="also-grid"></div>
   </section>
 
-  <footer>CSEN 163 Final Project &nbsp;·&nbsp; Team: Bemmy · Aarush · Keona · Blessy &nbsp;·&nbsp; <span>LibraryAI 2026</span></footer>
+  <footer>CSEN 163 Final Project &nbsp;·&nbsp; Team: Bemmy · Aarush · Keona · Blessy &nbsp;·&nbsp; <span>SCAIL 2026</span></footer>
+</div>
+
+
+<!-- Welcome Modal -->
+<div class="welcome-modal" id="welcome-modal">
+  <div class="welcome-card">
+    <h2>Welcome to SCAIL 👋</h2>
+    <p>Explore Santa Clara AI Library to find books fast, locate shelves instantly, and track your sustainability impact.</p>
+    <button onclick="closeWelcomeModal()">Start Exploring</button>
+  </div>
 </div>
 
 <!-- Toast -->
