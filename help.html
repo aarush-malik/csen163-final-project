@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCAIL Help Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --ink:#000;
+      --forest:#862633;
+      --canopy:#6B1D29;
+      --mist:#F5E6E8;
+      --parchment:#F2F2F2;
+      --cream:#fff;
+      --shadow:0 8px 32px rgba(134,38,51,0.12);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ink);min-height:100vh;}
+
+    nav{
+      position:sticky;top:0;z-index:200;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 2.5rem;height:64px;background:rgba(255,255,255,0.92);
+      backdrop-filter:blur(12px);border-bottom:1px solid rgba(134,38,51,0.15);
+    }
+    .nav-brand{display:flex;align-items:center;gap:0.6rem;text-decoration:none;}
+    .nav-brand-icon{width:34px;height:34px;background:var(--forest);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:white;}
+    .nav-brand-name{font-family:'Playfair Display',serif;font-size:1.25rem;color:var(--forest);font-weight:700;}
+    .nav-links{display:flex;gap:0.25rem;}
+    .nav-links a{font-size:0.875rem;font-weight:500;color:var(--ink);text-decoration:none;padding:0.45rem 1rem;border-radius:8px;opacity:0.7;transition:all .2s;}
+    .nav-links a:hover,.nav-links a.active{background:var(--mist);color:var(--forest);opacity:1;font-weight:600;}
+
+    .help-hero{background:linear-gradient(160deg,var(--forest) 0%,#4A0E17 100%);padding:4rem 2rem;color:white;text-align:center;}
+    .help-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);margin-bottom:.75rem;}
+    .help-hero p{color:rgba(255,255,255,0.75);max-width:700px;margin:0 auto;line-height:1.7;}
+
+    .wrap{max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem 4rem;}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+    .card{background:var(--cream);border-radius:18px;padding:1.5rem;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.05);}
+    .card h2{font-family:'Playfair Display',serif;color:var(--forest);font-size:1.35rem;margin-bottom:.7rem;}
+    .card p,.card li{line-height:1.65;color:#444;font-size:.95rem;}
+    .card ol,.card ul{padding-left:1.1rem;}
+    .card li{margin:.45rem 0;}
+    .card a{color:var(--forest);font-weight:600;}
+
+    footer{text-align:center;padding:2rem 1rem;color:#666;font-size:.88rem;}
+    footer span{color:var(--forest);font-weight:700;}
+
+    @media(max-width:980px){.grid{grid-template-columns:1fr;}}
+    @media(max-width:900px){nav{padding:0 1rem;}.nav-links{gap:0;}}
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="nav-brand" href="index.html">
+      <div class="nav-brand-icon">📚</div>
+      <span class="nav-brand-name">SCAIL</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="index.html">Sustainability</a>
+      <a href="index.html">AI Search</a>
+      <a class="active" href="help.html">Help</a>
+    </div>
+  </nav>
+
+  <section class="help-hero">
+    <h1>SCAIL Help Center</h1>
+    <p>Everything you need to get started with Santa Clara AI Library — from quick tutorial steps to FAQs and support contacts.</p>
+  </section>
+
+  <main class="wrap">
+    <div class="grid">
+      <section class="card">
+        <h2>Quick Tutorial</h2>
+        <ol>
+          <li>Go to <strong>AI Search</strong> and type a title, author, or topic.</li>
+          <li>Use filters for category, availability, and sorting.</li>
+          <li>Open a result to view exact <strong>floor, aisle, and shelf</strong> directions.</li>
+          <li>Reserve available books or join the waitlist for checked-out titles.</li>
+          <li>Visit <strong>Sustainability</strong> to track your environmental impact.</li>
+        </ol>
+      </section>
+
+      <section class="card">
+        <h2>FAQ</h2>
+        <ul>
+          <li><strong>What is SCAIL?</strong> It stands for <em>Santa Clara AI Library</em>, inspired by SCU library workflows.</li>
+          <li><strong>Do I need an account?</strong> Not for browsing/searching this demo catalog.</li>
+          <li><strong>Are digital books supported?</strong> Yes, for titles marked “Digital Available.”</li>
+          <li><strong>How accurate is shelf guidance?</strong> Directions come from the catalog metadata + floor map.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Contact</h2>
+        <p>Questions, feedback, or demo issues? Reach the SCAIL project team:</p>
+        <ul>
+          <li>Email: <a href="mailto:scail-support@scu.edu">scail-support@scu.edu</a></li>
+          <li>Office Hours: Mon–Fri, 10:00 AM – 5:00 PM</li>
+          <li>Location: Santa Clara University, Library Innovation Lab</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer>CSEN 163 Final Project · Team: Bemmy · Aarush · Keona · Blessy · <span>SCAIL 2026</span></footer>
+</body>
+</html>
