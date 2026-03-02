@@ -1,6 +1,9 @@
 // ---------- Book Catalogue ----------
 // Data sourced from Open Library (openlibrary.org)
+// Cover images via Open Library Covers API: https://covers.openlibrary.org/b/id/{coverId}-M.jpg
 // Categories: Fiction, STEM, Kids, History & Biography, Fantasy & Sci-Fi, Self-Help & Wellness, Philosophy & Art
+
+const COVER_BASE = "https://covers.openlibrary.org/b/id/";
 
 const books = [
 
@@ -16,6 +19,7 @@ const books = [
     location: { floor: 1, aisle: 3, shelf: "C" },
     available: true,
     digital: true,
+    coverId: null,
   },
   {
     id: "f2",
@@ -28,6 +32,7 @@ const books = [
     location: { floor: 1, aisle: 3, shelf: "D" },
     available: true,
     digital: false,
+    coverId: null,
   },
   {
     id: "f3",
@@ -40,6 +45,7 @@ const books = [
     location: { floor: 1, aisle: 3, shelf: "A" },
     available: true,
     digital: true,
+    coverId: 9255229,
   },
   {
     id: "f4",
@@ -52,6 +58,7 @@ const books = [
     location: { floor: 1, aisle: 4, shelf: "A" },
     available: false,
     digital: true,
+    coverId: 14066646,
   },
   {
     id: "f5",
@@ -64,6 +71,7 @@ const books = [
     location: { floor: 1, aisle: 4, shelf: "B" },
     available: true,
     digital: true,
+    coverId: 13699667,
   },
   {
     id: "f6",
@@ -76,6 +84,7 @@ const books = [
     location: { floor: 1, aisle: 4, shelf: "C" },
     available: true,
     digital: false,
+    coverId: 8311819,
   },
   {
     id: "f7",
@@ -88,6 +97,7 @@ const books = [
     location: { floor: 1, aisle: 4, shelf: "D" },
     available: true,
     digital: true,
+    coverId: 94081,
   },
   {
     id: "f8",
@@ -100,6 +110,7 @@ const books = [
     location: { floor: 1, aisle: 5, shelf: "A" },
     available: true,
     digital: true,
+    coverId: 7740257,
   },
   {
     id: "f9",
@@ -112,6 +123,7 @@ const books = [
     location: { floor: 1, aisle: 5, shelf: "B" },
     available: false,
     digital: true,
+    coverId: 745331,
   },
   {
     id: "f10",
@@ -124,6 +136,7 @@ const books = [
     location: { floor: 1, aisle: 5, shelf: "C" },
     available: true,
     digital: false,
+    coverId: 11263774,
   },
   {
     id: "f11",
@@ -136,6 +149,7 @@ const books = [
     location: { floor: 1, aisle: 5, shelf: "D" },
     available: true,
     digital: true,
+    coverId: 34655,
   },
 
   // ===== STEM =====
@@ -150,6 +164,7 @@ const books = [
     location: { floor: 2, aisle: 1, shelf: "B" },
     available: true,
     digital: true,
+    coverId: 7988607,
   },
   {
     id: "st2",
@@ -162,6 +177,7 @@ const books = [
     location: { floor: 2, aisle: 1, shelf: "A" },
     available: true,
     digital: true,
+    coverId: 8634250,
   },
   {
     id: "st3",
@@ -174,6 +190,7 @@ const books = [
     location: { floor: 2, aisle: 1, shelf: "C" },
     available: true,
     digital: false,
+    coverId: 12882940,
   },
   {
     id: "st4",
@@ -186,6 +203,7 @@ const books = [
     location: { floor: 2, aisle: 1, shelf: "D" },
     available: true,
     digital: true,
+    coverId: 10984324,
   },
   {
     id: "st5",
@@ -198,6 +216,7 @@ const books = [
     location: { floor: 2, aisle: 2, shelf: "A" },
     available: true,
     digital: true,
+    coverId: 12816911,
   },
   {
     id: "st6",
@@ -210,6 +229,7 @@ const books = [
     location: { floor: 2, aisle: 2, shelf: "B" },
     available: false,
     digital: true,
+    coverId: 12356249,
   },
   {
     id: "st7",
@@ -222,6 +242,7 @@ const books = [
     location: { floor: 2, aisle: 2, shelf: "C" },
     available: true,
     digital: true,
+    coverId: 4849549,
   },
   {
     id: "st8",
@@ -234,6 +255,7 @@ const books = [
     location: { floor: 2, aisle: 2, shelf: "D" },
     available: true,
     digital: false,
+    coverId: 10656102,
   },
 
   // ===== KIDS =====
@@ -248,6 +270,7 @@ const books = [
     location: { floor: 1, aisle: 7, shelf: "D" },
     available: false,
     digital: true,
+    coverId: null,
   },
   {
     id: "k2",
@@ -260,6 +283,7 @@ const books = [
     location: { floor: 1, aisle: 7, shelf: "A" },
     available: true,
     digital: true,
+    coverId: 8359565,
   },
   {
     id: "k3",
@@ -272,6 +296,7 @@ const books = [
     location: { floor: 1, aisle: 7, shelf: "B" },
     available: true,
     digital: false,
+    coverId: 5913135,
   },
   {
     id: "k4",
@@ -284,6 +309,7 @@ const books = [
     location: { floor: 1, aisle: 7, shelf: "C" },
     available: true,
     digital: true,
+    coverId: 3344204,
   },
   {
     id: "k5",
@@ -296,6 +322,7 @@ const books = [
     location: { floor: 1, aisle: 8, shelf: "A" },
     available: true,
     digital: true,
+    coverId: 36215,
   },
   {
     id: "k6",
@@ -308,6 +335,7 @@ const books = [
     location: { floor: 1, aisle: 8, shelf: "B" },
     available: false,
     digital: true,
+    coverId: 6950992,
   },
   {
     id: "k7",
@@ -320,6 +348,7 @@ const books = [
     location: { floor: 1, aisle: 8, shelf: "C" },
     available: true,
     digital: false,
+    coverId: 12391198,
   },
   {
     id: "k8",
@@ -332,6 +361,7 @@ const books = [
     location: { floor: 1, aisle: 8, shelf: "D" },
     available: true,
     digital: true,
+    coverId: 8923621,
   },
 
   // ===== HISTORY & BIOGRAPHY =====
@@ -346,6 +376,7 @@ const books = [
     location: { floor: 2, aisle: 3, shelf: "A" },
     available: true,
     digital: true,
+    coverId: 8247724,
   },
   {
     id: "h2",
@@ -358,6 +389,7 @@ const books = [
     location: { floor: 2, aisle: 3, shelf: "B" },
     available: true,
     digital: true,
+    coverId: 14856045,
   },
   {
     id: "h3",
@@ -370,6 +402,7 @@ const books = [
     location: { floor: 2, aisle: 3, shelf: "C" },
     available: true,
     digital: false,
+    coverId: 119317,
   },
   {
     id: "h4",
@@ -382,6 +415,7 @@ const books = [
     location: { floor: 2, aisle: 3, shelf: "D" },
     available: false,
     digital: true,
+    coverId: 2074044,
   },
   {
     id: "h5",
@@ -394,6 +428,7 @@ const books = [
     location: { floor: 2, aisle: 4, shelf: "A" },
     available: true,
     digital: true,
+    coverId: 411542,
   },
   {
     id: "h6",
@@ -406,6 +441,7 @@ const books = [
     location: { floor: 2, aisle: 4, shelf: "B" },
     available: true,
     digital: true,
+    coverId: 116790,
   },
   {
     id: "h7",
@@ -418,6 +454,7 @@ const books = [
     location: { floor: 2, aisle: 4, shelf: "C" },
     available: true,
     digital: false,
+    coverId: 405360,
   },
 
   // ===== FANTASY & SCI-FI =====
@@ -432,6 +469,7 @@ const books = [
     location: { floor: 3, aisle: 1, shelf: "A" },
     available: true,
     digital: true,
+    coverId: 14625765,
   },
   {
     id: "fs2",
@@ -444,6 +482,7 @@ const books = [
     location: { floor: 3, aisle: 1, shelf: "B" },
     available: true,
     digital: true,
+    coverId: 14627509,
   },
   {
     id: "fs3",
@@ -456,6 +495,7 @@ const books = [
     location: { floor: 3, aisle: 1, shelf: "C" },
     available: false,
     digital: true,
+    coverId: 9269962,
   },
   {
     id: "fs4",
@@ -468,6 +508,7 @@ const books = [
     location: { floor: 3, aisle: 1, shelf: "D" },
     available: true,
     digital: false,
+    coverId: 14627042,
   },
   {
     id: "fs5",
@@ -480,6 +521,7 @@ const books = [
     location: { floor: 3, aisle: 2, shelf: "A" },
     available: true,
     digital: true,
+    coverId: 479102,
   },
   {
     id: "fs6",
@@ -492,6 +534,7 @@ const books = [
     location: { floor: 3, aisle: 2, shelf: "B" },
     available: true,
     digital: true,
+    coverId: 8242857,
   },
   {
     id: "fs7",
@@ -504,6 +547,7 @@ const books = [
     location: { floor: 3, aisle: 2, shelf: "C" },
     available: true,
     digital: false,
+    coverId: 5484189,
   },
   {
     id: "fs8",
@@ -516,6 +560,7 @@ const books = [
     location: { floor: 3, aisle: 2, shelf: "D" },
     available: true,
     digital: true,
+    coverId: 448130,
   },
 
   // ===== SELF-HELP & WELLNESS =====
@@ -530,6 +575,7 @@ const books = [
     location: { floor: 2, aisle: 5, shelf: "A" },
     available: true,
     digital: true,
+    coverId: 13314878,
   },
   {
     id: "sh2",
@@ -542,6 +588,7 @@ const books = [
     location: { floor: 2, aisle: 5, shelf: "B" },
     available: true,
     digital: true,
+    coverId: 14542536,
   },
   {
     id: "sh3",
@@ -554,6 +601,7 @@ const books = [
     location: { floor: 2, aisle: 5, shelf: "C" },
     available: false,
     digital: true,
+    coverId: 6553019,
   },
   {
     id: "sh4",
@@ -566,6 +614,7 @@ const books = [
     location: { floor: 2, aisle: 5, shelf: "D" },
     available: true,
     digital: true,
+    coverId: 6268048,
   },
   {
     id: "sh5",
@@ -578,6 +627,7 @@ const books = [
     location: { floor: 2, aisle: 6, shelf: "A" },
     available: true,
     digital: false,
+    coverId: 1760143,
   },
 
   // ===== PHILOSOPHY & ART =====
@@ -592,6 +642,7 @@ const books = [
     location: { floor: 3, aisle: 3, shelf: "A" },
     available: true,
     digital: true,
+    coverId: 6550324,
   },
   {
     id: "pa2",
@@ -604,6 +655,7 @@ const books = [
     location: { floor: 3, aisle: 3, shelf: "B" },
     available: true,
     digital: false,
+    coverId: 104154,
   },
   {
     id: "pa3",
@@ -616,6 +668,7 @@ const books = [
     location: { floor: 3, aisle: 3, shelf: "C" },
     available: true,
     digital: true,
+    coverId: 966821,
   },
   {
     id: "pa4",
@@ -628,6 +681,7 @@ const books = [
     location: { floor: 3, aisle: 3, shelf: "D" },
     available: false,
     digital: true,
+    coverId: 675852,
   },
   {
     id: "pa5",
@@ -640,6 +694,7 @@ const books = [
     location: { floor: 3, aisle: 4, shelf: "A" },
     available: true,
     digital: true,
+    coverId: 12089,
   },
   {
     id: "pa6",
@@ -652,5 +707,6 @@ const books = [
     location: { floor: 3, aisle: 4, shelf: "B" },
     available: true,
     digital: false,
+    coverId: 5661503,
   },
 ];
