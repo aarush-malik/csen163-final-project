@@ -85,14 +85,6 @@ function addCurrentBookToWishlist() {
   toast('Added to wishlist: "' + currentBook.title + '". Open My List to view it.');
 }
 
-function setSystemStatus(isLoading, label) {
-  const dot = document.getElementById("status-dot");
-  const text = document.getElementById("status-text");
-  if (!dot || !text) return;
-  dot.classList.toggle("loading", Boolean(isLoading));
-  text.textContent = label || (isLoading ? "Working..." : "Ready");
-}
-
 // ── Navigation ──
 function goTo(page, linkEl) {
   setSystemStatus(true, "Loading page...");
@@ -270,8 +262,7 @@ function renderResults(matches) {
             '<div class="rc-location">📍 Floor ' + b.location.floor + " · Aisle " + aisleL + " · Shelf " + b.location.shelf + "</div>" +
           "</div>" +
           '<div class="rc-actions">' +
-            '<button class="btn-reserve" onclick="event.stopPropagation();reserveBook(\'' + b.id + '\')"' +
-              (!b.available ? ' style="background:#ccc;cursor:default;"' : "") + ">" +
+            '<button class="btn-reserve ' + (!b.available ? 'waitlist' : '') + '" onclick="event.stopPropagation();reserveBook(\'' + b.id + '\')">' +
               (b.available ? "Place Hold" : "Join Waitlist") + "</button>" +
             '<button class="btn-detail" onclick="event.stopPropagation();openDetail(\'' + b.id + '\')">Details →</button>' +
           "</div>" +
@@ -377,12 +368,10 @@ function openDetail(bookId) {
   const reserveBtn = document.getElementById("detail-reserve-btn");
   if (b.available) {
     reserveBtn.textContent = "Place Hold for Pickup";
-    reserveBtn.style.background = "";
-    reserveBtn.style.cursor = "";
+    reserveBtn.classList.remove("waitlist");
   } else {
     reserveBtn.textContent = "Join Waitlist";
-    reserveBtn.style.background = "#ccc";
-    reserveBtn.style.cursor = "default";
+    reserveBtn.classList.add("waitlist");
   }
 
   // Floor map
