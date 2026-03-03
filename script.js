@@ -85,6 +85,14 @@ function addCurrentBookToWishlist() {
   toast('Added to wishlist: "' + currentBook.title + '". Open My List to view it.');
 }
 
+function setSystemStatus(isLoading, label) {
+  const dot = document.getElementById("status-dot");
+  const text = document.getElementById("status-text");
+  if (!dot || !text) return;
+  dot.classList.toggle("loading", Boolean(isLoading));
+  text.textContent = label || (isLoading ? "Working..." : "Ready");
+}
+
 // ── Navigation ──
 function goTo(page, linkEl) {
   setSystemStatus(true, "Loading page...");
