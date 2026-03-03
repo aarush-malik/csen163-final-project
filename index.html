@@ -51,6 +51,17 @@ nav{
   font-size:0.875rem;font-weight:600;cursor:pointer;transition:all 0.2s;
 }
 .nav-cta:hover{background:var(--canopy);transform:translateY(-1px);}
+.nav-cta.secondary{background:white;color:var(--forest);border:1.5px solid var(--dew);}
+.nav-cta.secondary:hover{background:var(--mist);}
+
+.shelf-panel{position:fixed;right:1.2rem;top:78px;width:320px;max-height:70vh;overflow:auto;background:white;border:1px solid rgba(134,38,51,0.2);border-radius:14px;box-shadow:var(--shadow-lg);z-index:950;padding:1rem;display:none;}
+.shelf-panel.show{display:block;}
+.shelf-panel h3{font-size:0.95rem;color:var(--forest);margin-bottom:0.6rem;}
+.shelf-empty{font-size:0.82rem;color:#777;}
+.shelf-list{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.5rem;}
+.shelf-item{display:flex;justify-content:space-between;gap:0.5rem;background:#faf7f8;border:1px solid #f0dfe3;border-radius:10px;padding:0.5rem 0.6rem;font-size:0.8rem;}
+.shelf-type{font-weight:700;color:var(--forest);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.4px;}
+.shelf-remove{border:none;background:transparent;color:#9a5560;cursor:pointer;font-size:0.74rem;}
 
 /* -- PAGES -- */
 .page{display:none;padding-top:64px;}
@@ -444,6 +455,7 @@ footer span{color:#E8C6CB;}
   .detail-back{position:relative;top:auto;left:auto;margin-bottom:1rem;display:inline-flex;}
   .nav-links{display:none;}
   .nav-cta{display:none;}
+  .shelf-panel{right:0.8rem;left:0.8rem;width:auto;top:70px;}
   .search-bar{flex-direction:column;border-radius:12px;}
   .search-bar input{padding:0.9rem 1rem;}
   .search-bar-btn{width:100%;padding:0.85rem 1rem;}
@@ -472,6 +484,7 @@ footer span{color:#E8C6CB;}
     <span id="status-dot" class="status-dot"></span>
     <span id="status-text">Ready</span>
   </div>
+  <button class="nav-cta secondary" onclick="toggleShelfPanel()">My List (<span id="shelf-count">0</span>)</button>
   <button class="nav-cta" onclick="toast('Coming soon!')">Sign In</button>
 </nav>
 
@@ -758,7 +771,7 @@ footer span{color:#E8C6CB;}
       <p class="detail-desc" id="detail-desc">Book summary.</p>
       <div class="detail-action-group">
         <button class="btn-lg btn-lg-primary" id="detail-reserve-btn" onclick="reserveCurrentBook()">Reserve This Book</button>
-        <button class="btn-lg btn-lg-outline" onclick="toast('Added to wishlist!')">Add to Wishlist</button>
+        <button class="btn-lg btn-lg-outline" onclick="addCurrentBookToWishlist()">Add to Wishlist</button>
       </div>
     </div>
     <div class="detail-quick-stats">
@@ -898,6 +911,12 @@ footer span{color:#E8C6CB;}
   <footer>CSEN 163 Final Project &nbsp;·&nbsp; Team: Bemmy · Aarush · Keona · Blessy &nbsp;·&nbsp; <span>SCAIL 2026</span></footer>
 </div>
 
+
+<div class="shelf-panel" id="shelf-panel">
+  <h3>My Holds, Waitlist & Wishlist</h3>
+  <div class="shelf-empty" id="shelf-empty">Your list is empty right now.</div>
+  <div class="shelf-list" id="shelf-list"></div>
+</div>
 
 <!-- Welcome Modal -->
 <div class="welcome-modal" id="welcome-modal">

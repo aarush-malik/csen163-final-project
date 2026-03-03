@@ -12,6 +12,78 @@ const AISLE_LETTERS = ["A", "B", "C", "D"];
 
 let currentBook = null;
 let lastSearchResults = [];
+let userShelf = [];
+
+function setSystemStatus(isLoading, label) {
+  const dot = document.getElementById("status-dot");
+  const text = document.getElementById("status-text");
+  if (!dot || !text) return;
+  dot.classList.toggle("loading", Boolean(isLoading));
+  text.textContent = label || (isLoading ? "Working..." : "Ready");
+}
+
+function loadUserShelf() {
+  try {
+    const raw = localStorage.getItem("scailUserShelf");
+    userShelf = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(userShelf)) userShelf = [];
+  } catch (e) {
+    userShelf = [];
+  }
+}
+
+function saveUserShelf() {
+  try { localStorage.setItem("scailUserShelf", JSON.stringify(userShelf)); } catch (e) {}
+}
+
+function addToShelf(book, type) {
+  if (!book) return;
+  const exists = userShelf.some(item => item.bookId === book.id && item.type === type);
+  if (exists) return;
+  userShelf.unshift({ bookId: book.id, title: book.title, author: book.author, type: type });
+  saveUserShelf();
+  renderShelfPanel();
+}
+
+function renderShelfPanel() {
+  const list = document.getElementById("shelf-list");
+  const empty = document.getElementById("shelf-empty");
+  const count = document.getElementById("shelf-count");
+  if (!list || !empty || !count) return;
+
+  count.textContent = String(userShelf.length);
+  if (userShelf.length === 0) {
+    empty.style.display = "block";
+    list.innerHTML = "";
+    return;
+  }
+
+  empty.style.display = "none";
+  list.innerHTML = userShelf.map((item, idx) => (
+    '<div class="shelf-item">' +
+      '<div><div class="shelf-type">' + item.type + '</div><div>' + item.title + '</div><div style="color:#777;">' + item.author + '</div></div>' +
+      '<button class="shelf-remove" onclick="removeShelfItem(' + idx + ')">Remove</button>' +
+    '</div>'
+  )).join("");
+}
+
+function removeShelfItem(index) {
+  userShelf.splice(index, 1);
+  saveUserShelf();
+  renderShelfPanel();
+}
+
+function toggleShelfPanel() {
+  const panel = document.getElementById("shelf-panel");
+  if (!panel) return;
+  panel.classList.toggle("show");
+}
+
+function addCurrentBookToWishlist() {
+  if (!currentBook) return;
+  addToShelf(currentBook, "Wishlist");
+  toast('Added to wishlist: "' + currentBook.title + '". Open My List to view it.');
+}
 
 function setSystemStatus(isLoading, label) {
   const dot = document.getElementById("status-dot");
@@ -230,8 +302,13 @@ function renderAIResponse(query, matches) {
 
 function reserveBook(bookId) {
   const book = books.find(b => b.id === bookId);
-  if (book && book.available) toast('Hold placed for pickup: "' + book.title + '".');
-  else if (book) toast('Added to hold waitlist: "' + book.title + '".');
+  if (book && book.available) {
+    addToShelf(book, "Hold");
+    toast('Hold placed for pickup: "' + book.title + '". Open My List to view it.');
+  } else if (book) {
+    addToShelf(book, "Waitlist");
+    toast('Added to hold waitlist: "' + book.title + '". Open My List to view it.');
+  }
 }
 
 function reserveCurrentBook() {
@@ -425,6 +502,8 @@ function animateValue(id, newVal) {
 
 // ── Init ──
 document.addEventListener("DOMContentLoaded", function () {
+  loadUserShelf();
+  renderShelfPanel();
   // Enter key in search
   document.getElementById("searchInput").addEventListener("keydown", function (e) {
     if (e.key === "Enter") runSearch();
